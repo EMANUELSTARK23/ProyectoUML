@@ -1,0 +1,35 @@
+@startuml Secuencia
+autonumber
+actor Temporizador
+participant "gestor : GestorSensores" as Gestor
+participant "lista[0] : ISensorRed\n(SensorTemperatura)" as TempSensor
+participant "lista[1] : ISensorRed\n(SensorColor)" as ColorSensor
+participant "bitacora : Logger" as Log
+
+Temporizador -> Gestor : iniciarMonitoreo()
+activate Gestor
+
+Gestor -> TempSensor : obtenerLectura()
+activate TempSensor
+TempSensor -> TempSensor : calcularGrados()
+TempSensor --> Gestor : return 24.5
+deactivate TempSensor
+
+Gestor -> ColorSensor : obtenerLectura()
+activate ColorSensor
+ColorSensor -> ColorSensor : calcularFrecuencia()
+
+alt Subescenario: Falla de lectura (Excepción)
+    ColorSensor --X Gestor : lanza LecturaAnomalaException
+    deactivate ColorSensor
+    Gestor -> Log : registrarError("Anomalía en sensor de color")
+    activate Log
+    Log --> Gestor : ok
+    deactivate Log
+else Flujo normal (Oculto en este ciclo por la falla)
+    ColorSensor --> Gestor : return datosColor
+end
+
+Gestor --> Temporizador : cicloCompletado
+deactivate Gestor
+@enduml

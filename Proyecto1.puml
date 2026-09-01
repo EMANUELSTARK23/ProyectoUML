@@ -1,0 +1,26 @@
+@startuml CasodeUso
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Administrador" as Admin
+actor "Temporizador" as Temp
+
+package "Plataforma de Monitoreo IoT" {
+  usecase "CU-01: Registrar Nuevo Sensor" as CU1
+  usecase "Configurar Umbrales" as CU1_1
+  
+  usecase "CU-02: Monitorear Red" as CU2
+  usecase "Leer Datos (Polimorfismo)" as CU2_1
+  
+  usecase "Registrar Alerta en Bitácora" as CUExt
+}
+
+Admin --> CU1
+CU1 --> CU1_1 : <<include>>
+
+Temp --> CU2
+CU2 --> CU2_1 : <<include>>
+
+CUExt --> CU1 : <<extend>>\n[Fallo de Conexión]
+CUExt --> CU2 : <<extend>>\n[Lectura Anómala]
+@enduml

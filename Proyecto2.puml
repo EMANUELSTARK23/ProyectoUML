@@ -1,0 +1,30 @@
+@startuml Subescenarios
+start
+:Temporizador inicia ciclo de lectura;
+:Obtener lista de sensores activos;
+
+while (¿Hay sensores pendientes por leer?) is (Sí)
+  :Llamar a **sensor.obtenerLectura()**;
+  
+  if (¿Sensor responde?) then (Sí)
+    if (¿Datos dentro del umbral normal?) then (Sí)
+      :Almacenar lectura en Base de Datos;
+      :Actualizar Interfaz Gráfica;
+    else (No - Subescenario A)
+      #FFCCCC::Lanzar **LecturaAnomalaException**;
+      :Capturar excepción (catch);
+      :Registrar advertencia en Bitácora;
+    endif
+  else (No - Subescenario B)
+    #FFCCCC::Lanzar **ConexionPerdidaException**;
+    :Capturar excepción (catch);
+    :Cambiar estado de sensor a "Inactivo";
+    :Generar alerta crítica al Administrador;
+  endif
+  
+endwhile (No)
+
+:Ciclo de monitoreo finalizado;
+:Esperar siguiente llamado del temporizador;
+stop
+@enduml
