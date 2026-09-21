@@ -1,0 +1,23 @@
+@startuml secuencia
+autonumber
+actor "GestorSensores" as Gestor
+participant "sensor : ISensorRed" as Sensor
+participant "bitacora : Logger" as Log
+
+Gestor -> Sensor : obtenerLectura()
+activate Sensor
+
+Sensor -> Sensor : procesarSenal()
+note right of Sensor: Ocurre un pico de voltaje\no lectura atípica
+
+Sensor --x Gestor : throw LecturaAnomalaException
+deactivate Sensor
+
+note left of Gestor: El bloque try-catch del\nGestor atrapa la excepción
+Gestor -> Log : registrarError("Valor fuera de rango")
+activate Log
+Log --> Gestor : confirmacionGuardado
+deactivate Log
+
+Gestor -> Gestor : continuarConSiguienteSensor()
+@enduml

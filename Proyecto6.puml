@@ -1,0 +1,16 @@
+@startuml estado
+[*] --> Desconectado
+
+Desconectado --> Conectando : conectar()
+Conectando --> Activo : [Conexión exitosa]
+Conectando --> Error : [ConexionFallidaException]
+
+Activo --> Leyendo : obtenerLectura()
+Leyendo --> Activo : [Lectura exitosa]
+Leyendo --> Error : [LecturaAnomalaException]
+
+Error --> Desconectado : reset() / desconectar()
+Activo --> Desconectado : desconectar()
+
+Desconectado --> [*]
+@enduml

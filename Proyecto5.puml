@@ -1,0 +1,18 @@
+@startuml colaboracion
+allowmixing
+skinparam objectBackgroundColor #E2E2F0
+
+object ": Administrador" as Admin
+object "gestor : GestorSensores" as Gestor
+object "sensor1 : SensorTemperatura" as S1
+object "sensor2 : SensorColor" as S2
+object "bitacora : Logger" as Log
+
+Admin -right-> Gestor : 1: iniciarMonitoreo()
+Gestor --> S1 : 2: obtenerLectura()
+S1 --> Gestor : 3: return(datos)
+Gestor --> S2 : 4: obtenerLectura()
+S2 --> Gestor : 5: throw(LecturaAnomalaException)
+Gestor -down-> Log : 6: registrarError(excepcion)
+
+@enduml

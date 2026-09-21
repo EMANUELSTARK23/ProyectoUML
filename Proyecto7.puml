@@ -1,0 +1,57 @@
+@startuml clases_final
+skinparam classAttributeIconSize 0
+
+interface ISensorRed <<interface>> {
+  + conectar(): boolean
+  + obtenerLectura(): float
+  + desconectar(): void
+}
+
+abstract class SensorBase {
+  # id: String
+  # puerto: int
+  # activo: boolean
+  + conectar(): boolean
+  + desconectar(): void
+}
+
+class SensorTemperatura {
+  - umbralMax: float
+  + obtenerLectura(): float
+}
+
+class SensorColor {
+  - frecuenciaBase: int
+  + obtenerLectura(): float
+}
+
+class GestorSensores {
+  - listaSensores: ISensorRed[]
+  + registrarSensor(sensor: ISensorRed): void
+  + iniciarMonitoreo(): void
+}
+
+class Exception {
+}
+
+class ConexionFallidaException {
+  - codigoError: int
+  + getMensaje(): String
+}
+
+class LecturaAnomalaException {
+  - valorAnomalo: float
+  + getMensaje(): String
+}
+
+' Relaciones
+ISensorRed <|.. SensorBase : <<realize>>
+SensorBase <|-- SensorTemperatura
+SensorBase <|-- SensorColor
+
+GestorSensores o-- ISensorRed : "gestiona >"
+
+Exception <|-- ConexionFallidaException
+Exception <|-- LecturaAnomalaException
+
+@enduml
